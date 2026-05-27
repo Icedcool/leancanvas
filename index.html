@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lean Canvas</title>
+<meta name="description" content="A light, single-page Lean Canvas you can fill out fast and export to Markdown or a PRD." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --ink: #141414;
+    --paper: #ffffff;
+    --surface: #fbfbfa;
+    --line: #1c1c1c;
+    --line-soft: #e2e2e0;
+    --muted: #8a8a8a;
+    --placeholder: #c4c4c2;
+    --accent: #e5342a;
+    --accent-dark: #c4271e;
+    --display: "Archivo", system-ui, sans-serif;
+    --mono: "Space Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--display);
+    color: var(--ink);
+    background: var(--surface);
+    background-image:
+      linear-gradient(var(--surface) 0 0),
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.018) 0 1px, transparent 1px 64px);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .page {
+    max-width: 1460px;
+    margin: 0 auto;
+    padding: 34px 30px 0;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 28px;
+    flex-wrap: wrap;
+    padding-bottom: 22px;
+    margin-bottom: 22px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .wordmark {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(26px, 3.4vw, 40px);
+    text-transform: uppercase;
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+  }
+  .wordmark .dot { color: var(--accent); }
+
+  .tagline {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    margin-top: 8px;
+  }
+
+  .meta {
+    display: flex;
+    align-items: flex-end;
+    gap: 26px;
+    flex-wrap: wrap;
+  }
+
+  .project-field { display: flex; flex-direction: column; gap: 6px; }
+  .project-field label {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .project-input {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    border: none;
+    border-bottom: 1.5px solid var(--ink);
+    background: transparent;
+    padding: 4px 2px;
+    min-width: 240px;
+    outline: none;
+    transition: border-color 0.18s ease;
+  }
+  .project-input::placeholder { color: var(--placeholder); font-weight: 600; }
+  .project-input:focus { border-color: var(--accent); }
+
+  .date {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    padding-bottom: 6px;
+    white-space: nowrap;
+  }
+  .date::before { content: "▪ "; color: var(--accent); }
+
+  /* ---------- Canvas grid ---------- */
+  .canvas {
+    background: var(--line);
+    border: 1.5px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .canvas-top, .canvas-bottom {
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+  }
+  .canvas-top {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, minmax(198px, 1fr));
+    grid-template-areas:
+      "problem solution   uvp unfairAdvantage customerSegments"
+      "problem keyMetrics uvp channels        customerSegments";
+  }
+  .canvas-bottom {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "costStructure revenueStreams";
+    min-height: 154px;
+  }
+
+  .cell {
+    background: var(--paper);
+    padding: 15px 17px 16px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-width: 0;
+    animation: fadeUp 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  }
+  .cell::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .cell:focus-within::before { transform: scaleX(1); }
+
+  .cell-head {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    margin-bottom: 2px;
+  }
+  .num {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+  .cell-title {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 13.5px;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+    margin: 0;
+  }
+  .cell-help {
+    font-family: var(--mono);
+    font-style: italic;
+    font-size: 10.5px;
+    line-height: 1.4;
+    color: var(--muted);
+    margin: 4px 0 9px;
+  }
+  .cell-input {
+    flex: 1;
+    width: 100%;
+    min-height: 42px;
+    border: none;
+    resize: none;
+    background: transparent;
+    font-family: var(--display);
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink);
+    outline: none;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .cell-input::placeholder { color: var(--placeholder); }
+
+  /* sub-field within a corner cell */
+  .subfield {
+    margin-top: 11px;
+    padding-top: 11px;
+    border-top: 1px dashed var(--line-soft);
+    display: flex;
+    flex-direction: column;
+  }
+  .cell-title.sub { font-size: 11.5px; font-weight: 700; letter-spacing: 0.01em; }
+  .cell-input.sub { flex: 0 1 auto; min-height: 44px; max-height: 110px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(9px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* ---------- Action bar ---------- */
+  .actionbar {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+    padding: 15px 2px 22px;
+    background: linear-gradient(to top, var(--surface) 72%, rgba(251,251,250,0));
+  }
+  .save-status {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--muted);
+    transition: color 0.2s ease;
+  }
+  .save-status::before { content: "● "; color: var(--line-soft); }
+  .save-status.flash { color: var(--ink); }
+  .save-status.flash::before { content: "✓ "; color: var(--accent); }
+
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.045em;
+    padding: 11px 18px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.08s ease;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn:active { transform: translateY(1px); }
+  .btn-ghost { border-color: var(--line-soft); color: var(--muted); }
+  .btn-ghost:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: #fff; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1080px) {
+    .canvas-top {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+      grid-template-areas:
+        "problem          solution"
+        "problem          keyMetrics"
+        "uvp              unfairAdvantage"
+        "uvp              channels"
+        "customerSegments customerSegments";
+    }
+    .cell { min-height: 170px; }
+  }
+
+  @media (max-width: 680px) {
+    .page { padding: 24px 16px 0; }
+    .canvas-top, .canvas-bottom {
+      grid-template-columns: 1fr;
+      grid-template-areas: none;
+      grid-template-rows: auto;
+    }
+    .cell { grid-area: auto !important; min-height: 150px; }
+    .topbar { gap: 18px; }
+    .project-input { min-width: 0; width: 100%; }
+    .actions { width: 100%; }
+    .btn { flex: 1 1 auto; text-align: center; }
+  }
+
+  /* ---------- Print ---------- */
+  @media print {
+    body { background: #fff; }
+    .page { padding: 0; max-width: none; }
+    .tagline, .date, .actionbar { display: none !important; }
+    .topbar { border-color: #000; }
+    .canvas { border-color: #000; }
+    .canvas-top, .canvas-bottom { grid-template-rows: auto; }
+    .cell { animation: none; break-inside: avoid; min-height: 150px; }
+    .cell-input { height: auto; overflow: visible; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="wordmark">Lean&nbsp;Canvas<span class="dot">.</span></div>
+        <div class="tagline">One-page business model · fill, export, iterate</div>
+      </div>
+      <div class="meta">
+        <div class="project-field">
+          <label for="project">Project / Idea</label>
+          <input id="project" class="project-input" placeholder="Name your idea…" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="date" id="date">—</div>
+      </div>
+    </header>
+
+    <main class="canvas">
+      <div class="canvas-top" id="canvasTop"></div>
+      <div class="canvas-bottom" id="canvasBottom"></div>
+    </main>
+
+    <footer class="actionbar">
+      <div class="save-status" id="saveStatus">Saved locally in this browser</div>
+      <div class="actions">
+        <button class="btn btn-ghost" id="btnReset" type="button">Reset</button>
+        <button class="btn btn-ghost" id="btnCopy" type="button">Copy Markdown</button>
+        <button class="btn" id="btnMd" type="button">Download Markdown</button>
+        <button class="btn btn-primary" id="btnPrd" type="button">Download PRD</button>
+      </div>
+    </footer>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Single source of truth — drives both rendering and exports.
+  // `num` follows the canonical Lean Canvas fill order (Maurya).
+  const SCHEMA = [
+    { key: "problem", num: "01", title: "Problem", row: "top",
+      help: "List your top 1-3 problems.",
+      placeholder: "What are the top problems your customers face?",
+      sub: { key: "existingAlternatives", title: "Existing Alternatives",
+             help: "List how these problems are solved today.",
+             placeholder: "How do customers solve this now?" } },
+    { key: "solution", num: "04", title: "Solution", row: "top",
+      help: "Outline a possible solution for each problem.",
+      placeholder: "Outline a solution for each problem." },
+    { key: "keyMetrics", num: "08", title: "Key Metrics", row: "top",
+      help: "List the key numbers that tell you how your business is doing.",
+      placeholder: "Which numbers tell you how you're doing?" },
+    { key: "uvp", num: "03", title: "Unique Value Proposition", row: "top",
+      help: "Single, clear, compelling message that states why you are different and worth paying attention.",
+      placeholder: "Why are you different and worth attention?",
+      sub: { key: "highLevelConcept", title: "High-Level Concept",
+             help: "List your X for Y analogy e.g. YouTube = Flickr for videos.",
+             placeholder: "Your X-for-Y analogy…" } },
+    { key: "unfairAdvantage", num: "09", title: "Unfair Advantage", row: "top",
+      help: "Something that cannot easily be bought or copied.",
+      placeholder: "What can't be easily copied or bought?" },
+    { key: "channels", num: "05", title: "Channels", row: "top",
+      help: "List your path to customers (inbound or outbound).",
+      placeholder: "Your path to customers…" },
+    { key: "customerSegments", num: "02", title: "Customer Segments", row: "top",
+      help: "List your target customers and users.",
+      placeholder: "Who are your target customers and users?",
+      sub: { key: "earlyAdopters", title: "Early Adopters",
+             help: "List the characteristics of your ideal customers.",
+             placeholder: "Characteristics of your ideal early customers…" } },
+    { key: "costStructure", num: "07", title: "Cost Structure", row: "bottom",
+      help: "List your fixed and variable costs.",
+      placeholder: "Fixed and variable costs…" },
+    { key: "revenueStreams", num: "06", title: "Revenue Streams", row: "bottom",
+      help: "List your sources of revenue.",
+      placeholder: "Your sources of revenue…" }
+  ];
+
+  // Markdown reading order + the PRD mapping reference field titles by key.
+  const TITLES = {};
+  SCHEMA.forEach(function (f) {
+    TITLES[f.key] = f.title;
+    if (f.sub) TITLES[f.sub.key] = f.sub.title;
+  });
+
+  const STORAGE_KEY = "leanCanvas:v1";
+  const state = load();
+  let saveTimer = null;
+
+  /* ---------- persistence ---------- */
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+  function persist() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    flashSaved();
+  }
+  function scheduleSave() {
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(persist, 450);
+  }
+
+  const statusEl = document.getElementById("saveStatus");
+  let flashTimer = null;
+  function flashSaved() {
+    statusEl.textContent = "Saved";
+    statusEl.classList.add("flash");
+    if (flashTimer) clearTimeout(flashTimer);
+    flashTimer = setTimeout(function () {
+      statusEl.classList.remove("flash");
+      statusEl.textContent = "Saved locally in this browser";
+    }, 1400);
+  }
+
+  /* ---------- rendering ---------- */
+  function makeTextarea(key, placeholder, isSub) {
+    const ta = document.createElement("textarea");
+    ta.className = "cell-input" + (isSub ? " sub" : "");
+    ta.dataset.key = key;
+    ta.placeholder = placeholder || "";
+    ta.setAttribute("aria-label", TITLES[key]);
+    ta.spellcheck = true;
+    ta.value = state[key] || "";
+    ta.addEventListener("input", function () {
+      state[key] = ta.value;
+      scheduleSave();
+    });
+    return ta;
+  }
+
+  function makeCell(field, index) {
+    const cell = document.createElement("section");
+    cell.className = "cell";
+    cell.style.gridArea = field.key;
+    cell.style.animationDelay = (index * 38) + "ms";
+
+    const head = document.createElement("div");
+    head.className = "cell-head";
+    const num = document.createElement("span");
+    num.className = "num";
+    num.textContent = field.num;
+    const title = document.createElement("h2");
+    title.className = "cell-title";
+    title.textContent = field.title;
+    head.appendChild(num);
+    head.appendChild(title);
+
+    const help = document.createElement("p");
+    help.className = "cell-help";
+    help.textContent = field.help;
+
+    cell.appendChild(head);
+    cell.appendChild(help);
+    cell.appendChild(makeTextarea(field.key, field.placeholder, false));
+
+    if (field.sub) {
+      const wrap = document.createElement("div");
+      wrap.className = "subfield";
+      const subHead = document.createElement("div");
+      subHead.className = "cell-head";
+      const subTitle = document.createElement("h3");
+      subTitle.className = "cell-title sub";
+      subTitle.textContent = field.sub.title;
+      subHead.appendChild(subTitle);
+      const subHelp = document.createElement("p");
+      subHelp.className = "cell-help";
+      subHelp.textContent = field.sub.help;
+      wrap.appendChild(subHead);
+      wrap.appendChild(subHelp);
+      wrap.appendChild(makeTextarea(field.sub.key, field.sub.placeholder, true));
+      cell.appendChild(wrap);
+    }
+    return cell;
+  }
+
+  const topEl = document.getElementById("canvasTop");
+  const bottomEl = document.getElementById("canvasBottom");
+  SCHEMA.forEach(function (f, i) {
+    (f.row === "bottom" ? bottomEl : topEl).appendChild(makeCell(f, i));
+  });
+
+  const projectInput = document.getElementById("project");
+  projectInput.value = state._project || "";
+  projectInput.addEventListener("input", function () {
+    state._project = projectInput.value;
+    scheduleSave();
+  });
+
+  document.getElementById("date").textContent = new Date().toLocaleDateString(undefined, {
+    year: "numeric", month: "short", day: "numeric"
+  });
+
+  /* ---------- export helpers ---------- */
+  function val(key) { return (state[key] || "").trim(); }
+  function projectName() { return (state._project || "").trim() || "Untitled"; }
+  function today() {
+    return new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+  }
+  function slug(s) {
+    const out = s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    return out || "lean-canvas";
+  }
+  function section(title, value) {
+    return "## " + title + "\n\n" + (value || "_TBD_") + "\n";
+  }
+  function download(filename, text) {
+    const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 0);
+  }
+
+  /* ---------- Markdown export (canvas reading order) ---------- */
+  function buildMarkdown() {
+    const lines = [];
+    lines.push("# " + projectName() + " — Lean Canvas");
+    lines.push("_Generated " + today() + "_");
+    lines.push("");
+    lines.push(section("Problem", val("problem")));
+    lines.push("### Existing Alternatives\n\n" + (val("existingAlternatives") || "_TBD_") + "\n");
+    lines.push(section("Customer Segments", val("customerSegments")));
+    lines.push("### Early Adopters\n\n" + (val("earlyAdopters") || "_TBD_") + "\n");
+    lines.push(section("Unique Value Proposition", val("uvp")));
+    lines.push("### High-Level Concept\n\n" + (val("highLevelConcept") || "_TBD_") + "\n");
+    lines.push(section("Solution", val("solution")));
+    lines.push(section("Channels", val("channels")));
+    lines.push(section("Revenue Streams", val("revenueStreams")));
+    lines.push(section("Cost Structure", val("costStructure")));
+    lines.push(section("Key Metrics", val("keyMetrics")));
+    lines.push(section("Unfair Advantage", val("unfairAdvantage")));
+    return lines.join("\n");
+  }
+
+  /* ---------- PRD export (deterministic mapping) ---------- */
+  function buildPRD() {
+    const L = [];
+    L.push("# " + projectName() + " — Product Requirements Document");
+    L.push("_Draft · Generated " + today() + "_");
+    L.push("");
+
+    L.push("## 1. Overview");
+    if (val("highLevelConcept")) L.push("**Concept:** " + val("highLevelConcept") + "\n");
+    L.push(val("uvp") || "_TBD_");
+    L.push("");
+
+    L.push("## 2. Problem Statement");
+    L.push(val("problem") || "_TBD_");
+    if (val("existingAlternatives")) L.push("\n**Current alternatives:** " + val("existingAlternatives"));
+    L.push("");
+
+    L.push("## 3. Target Users");
+    L.push(val("customerSegments") || "_TBD_");
+    if (val("earlyAdopters")) L.push("\n**Early adopters:** " + val("earlyAdopters"));
+    L.push("");
+
+    L.push("## 4. Proposed Solution");
+    L.push(val("solution") || "_TBD_");
+    L.push("");
+
+    L.push("## 5. Unique Value Proposition");
+    L.push(val("uvp") || "_TBD_");
+    L.push("");
+
+    L.push("## 6. Differentiation & Unfair Advantage");
+    L.push(val("unfairAdvantage") || "_TBD_");
+    L.push("");
+
+    L.push("## 7. Go-to-Market & Channels");
+    L.push(val("channels") || "_TBD_");
+    L.push("");
+
+    L.push("## 8. Success Metrics");
+    L.push(val("keyMetrics") || "_TBD_");
+    L.push("");
+
+    L.push("## 9. Business Model");
+    L.push("**Revenue streams:**\n" + (val("revenueStreams") || "_TBD_"));
+    L.push("\n**Cost structure:**\n" + (val("costStructure") || "_TBD_"));
+    L.push("");
+
+    L.push("## 10. Open Questions");
+    const blanks = [];
+    Object.keys(TITLES).forEach(function (key) {
+      if (!val(key)) blanks.push(TITLES[key]);
+    });
+    if (blanks.length) {
+      blanks.forEach(function (t) { L.push("- Define **" + t + "**"); });
+    } else {
+      L.push("_None — every canvas block is filled in._");
+    }
+    L.push("");
+
+    return L.join("\n");
+  }
+
+  /* ---------- actions ---------- */
+  document.getElementById("btnMd").addEventListener("click", function () {
+    download(slug(projectName()) + "-lean-canvas.md", buildMarkdown());
+  });
+  document.getElementById("btnPrd").addEventListener("click", function () {
+    download(slug(projectName()) + "-prd.md", buildPRD());
+  });
+
+  document.getElementById("btnCopy").addEventListener("click", function () {
+    const md = buildMarkdown();
+    const done = function () {
+      statusEl.textContent = "Markdown copied";
+      statusEl.classList.add("flash");
+      if (flashTimer) clearTimeout(flashTimer);
+      flashTimer = setTimeout(function () {
+        statusEl.classList.remove("flash");
+        statusEl.textContent = "Saved locally in this browser";
+      }, 1400);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(md).then(done).catch(function () { fallbackCopy(md); done(); });
+    } else {
+      fallbackCopy(md);
+      done();
+    }
+  });
+  function fallbackCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  document.getElementById("btnReset").addEventListener("click", function () {
+    if (!confirm("Clear the whole canvas? This can't be undone.")) return;
+    Object.keys(state).forEach(function (k) { delete state[k]; });
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    document.querySelectorAll(".cell-input").forEach(function (ta) { ta.value = ""; });
+    projectInput.value = "";
+    flashSaved();
+  });
+})();
+</script>
+</body>
+</html>
