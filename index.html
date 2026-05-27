@@ -338,8 +338,10 @@
       <div class="actions">
         <button class="btn btn-ghost" id="btnReset" type="button">Reset</button>
         <button class="btn btn-ghost" id="btnCopy" type="button">Copy Markdown</button>
-        <button class="btn" id="btnMd" type="button">Download Markdown</button>
+        <button class="btn btn-primary" id="btnMd" type="button">Download Markdown</button>
+        <!-- v2: PRD export — re-enable this button (and its listener in the script) when ready
         <button class="btn btn-primary" id="btnPrd" type="button">Download PRD</button>
+        -->
       </div>
     </footer>
   </div>
@@ -554,7 +556,7 @@
     return lines.join("\n");
   }
 
-  /* ---------- PRD export (deterministic mapping) ---------- */
+  /* ---------- PRD export (deterministic mapping) — v2, UI currently disabled ---------- */
   function buildPRD() {
     const L = [];
     L.push("# " + projectName() + " — Product Requirements Document");
@@ -620,9 +622,10 @@
   document.getElementById("btnMd").addEventListener("click", function () {
     download(slug(projectName()) + "-lean-canvas.md", buildMarkdown());
   });
-  document.getElementById("btnPrd").addEventListener("click", function () {
-    download(slug(projectName()) + "-prd.md", buildPRD());
-  });
+  // v2: PRD export — re-enable alongside the #btnPrd button in the markup.
+  // document.getElementById("btnPrd").addEventListener("click", function () {
+  //   download(slug(projectName()) + "-prd.md", buildPRD());
+  // });
 
   document.getElementById("btnCopy").addEventListener("click", function () {
     const md = buildMarkdown();
