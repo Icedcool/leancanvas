@@ -116,6 +116,229 @@
   }
   .date::before { content: "▪ "; color: var(--accent); }
 
+  /* ---------- Tabs ---------- */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .tab {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.045em;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    padding: 9px 4px 10px;
+    margin-right: 14px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.15s ease;
+  }
+  .tab::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 2.5px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.24s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--ink); }
+  .tab.active::after { transform: scaleX(1); }
+
+  .panel[hidden] { display: none; }
+
+  /* ---------- Worksheet grids (JTBD, Competitor) ---------- */
+  .worksheet {
+    background: var(--line);
+    border: 1.5px solid var(--ink);
+    display: grid;
+    gap: 1px;
+    grid-auto-rows: minmax(210px, auto);
+  }
+  .worksheet.cols-2 { grid-template-columns: 1fr 1fr; }
+  .worksheet.cols-1 { grid-template-columns: 1fr; }
+
+  /* ---------- Smart Actions table ---------- */
+  .smart-wrap { display: flex; flex-direction: column; gap: 16px; }
+  .smart-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--line);
+    border: 1.5px solid var(--ink);
+  }
+  .smart-table th, .smart-table td {
+    background: var(--paper);
+    border-right: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+    padding: 0;
+  }
+  .smart-table thead th {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-align: left;
+    padding: 9px 12px;
+    border-right-color: rgba(255,255,255,0.18);
+    border-bottom: none;
+  }
+  .smart-table thead th.th-done { text-align: center; }
+  .smart-table thead th.th-remove { padding: 0; }
+
+  .smart-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--display);
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--ink);
+    padding: 11px 12px;
+    outline: none;
+    resize: vertical;
+  }
+  textarea.smart-input { min-height: 44px; display: block; }
+  .smart-input::placeholder { color: var(--placeholder); }
+  .smart-table td:focus-within { box-shadow: inset 0 0 0 2px var(--accent); }
+
+  .smart-done-cell { text-align: center; vertical-align: middle; padding: 8px; }
+  .smart-done-cell input { width: 17px; height: 17px; accent-color: var(--accent); cursor: pointer; }
+
+  .smart-remove {
+    width: 100%;
+    height: 100%;
+    min-height: 44px;
+    border: none;
+    background: transparent;
+    color: var(--placeholder);
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+  .smart-remove:hover { color: var(--accent); }
+
+  .smart-add { align-self: flex-start; }
+
+  .smart-note {
+    border-top: 1px dashed var(--line-soft);
+    padding-top: 14px;
+  }
+  .smart-note h3 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+    margin: 0 0 8px;
+  }
+  .smart-note ul {
+    margin: 0;
+    padding-left: 18px;
+    font-family: var(--display);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .smart-note .smart-foot {
+    font-family: var(--mono);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--muted);
+    margin: 10px 0 0;
+  }
+
+  /* ---------- Assumptions panel (custom: matrix + testing table) ---------- */
+  .assumptions-wrap { display: flex; flex-direction: column; gap: 22px; }
+  .matrix-block, .testing-block { display: flex; flex-direction: column; }
+  .matrix-block .cell-help, .testing-block .cell-help { margin-bottom: 12px; }
+
+  .matrix-frame {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    grid-template-rows: 1fr 24px;
+    grid-template-areas:
+      "ylabel grid"
+      ".      xlabel";
+    gap: 8px;
+  }
+  .matrix-ylabel {
+    grid-area: ylabel;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  .matrix-ylabel .axis-name {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+  .matrix-xlabel {
+    grid-area: xlabel;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  .matrix-xlabel .axis-name { font-weight: 700; letter-spacing: 0.08em; color: var(--ink); }
+
+  .matrix-grid {
+    grid-area: grid;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(140px, 1fr) minmax(140px, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1.5px solid var(--ink);
+  }
+  .matrix-quad {
+    background: var(--paper);
+    padding: 11px 13px 12px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .matrix-quad .quad-tag {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .matrix-quad.crit { background: linear-gradient(rgba(229, 52, 42, 0.06), rgba(229, 52, 42, 0.06)), var(--paper); }
+  .matrix-quad.crit .quad-tag { color: var(--accent); }
+  .matrix-input {
+    flex: 1;
+    min-height: 88px;
+    resize: vertical;
+  }
+
   /* ---------- Canvas grid ---------- */
   .canvas {
     background: var(--line);
@@ -292,7 +515,13 @@
       grid-template-areas: none;
       grid-template-rows: auto;
     }
+    .worksheet.cols-2 { grid-template-columns: 1fr; }
     .cell { grid-area: auto !important; min-height: 150px; }
+    .smart-table thead th { font-size: 9.5px; letter-spacing: 0.03em; padding: 8px 8px; }
+    .smart-input { font-size: 13px; padding: 9px 8px; }
+    .matrix-frame { grid-template-columns: 20px 1fr; }
+    .matrix-grid { grid-template-rows: minmax(110px, 1fr) minmax(110px, 1fr); }
+    .matrix-quad { padding: 9px 10px 10px; }
     .topbar { gap: 18px; }
     .project-input { min-width: 0; width: 100%; }
     .actions { width: 100%; }
@@ -309,6 +538,11 @@
     .canvas-top, .canvas-bottom { grid-template-rows: auto; }
     .cell { animation: none; break-inside: avoid; min-height: 150px; }
     .cell-input { height: auto; overflow: visible; }
+    .smart-add, .smart-remove { display: none !important; }
+    .smart-table th.th-remove, .smart-table td.dt-remove-cell { display: none; }
+    .smart-input { overflow: visible; }
+    .matrix-grid { break-inside: avoid; }
+    .matrix-input { overflow: visible; }
   }
 </style>
 </head>
@@ -328,9 +562,79 @@
       </div>
     </header>
 
-    <main class="canvas">
-      <div class="canvas-top" id="canvasTop"></div>
-      <div class="canvas-bottom" id="canvasBottom"></div>
+    <nav class="tabs" id="tabs"></nav>
+
+    <main>
+      <section class="panel" id="panel-canvas">
+        <div class="canvas">
+          <div class="canvas-top" id="canvasTop"></div>
+          <div class="canvas-bottom" id="canvasBottom"></div>
+        </div>
+      </section>
+      <section class="panel" id="panel-jtbd" hidden>
+        <div class="worksheet cols-2" id="jtbdGrid"></div>
+      </section>
+      <section class="panel" id="panel-competitor" hidden>
+        <div class="worksheet cols-1" id="competitorGrid"></div>
+      </section>
+      <section class="panel" id="panel-assumptions" hidden>
+        <div class="assumptions-wrap">
+          <div class="worksheet cols-1" id="asmBrainMount"></div>
+
+          <div class="matrix-block">
+            <div class="cell-head">
+              <span class="num">02</span>
+              <h2 class="cell-title">Risk &amp; Uncertainty</h2>
+            </div>
+            <p class="cell-help">Place each assumption in a quadrant — Level of Uncertainty (how sure are you?) against Risk to the venture (how much is at stake?). The top-right corner (high uncertainty × high risk) is critical: mark those with $ cost to test.</p>
+            <div class="matrix-frame">
+              <div class="matrix-ylabel">
+                <span>High</span>
+                <span class="axis-name">Level of Uncertainty</span>
+                <span>Low</span>
+              </div>
+              <div class="matrix-grid" id="matrixGrid"></div>
+              <div class="matrix-xlabel">
+                <span>Low</span>
+                <span class="axis-name">Risk to the venture</span>
+                <span>High</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="worksheet cols-1" id="asmCriticalMount"></div>
+
+          <div class="testing-block">
+            <div class="cell-head">
+              <span class="num">04</span>
+              <h2 class="cell-title">Testing of Assumptions</h2>
+            </div>
+            <p class="cell-help">For each critical assumption, propose a test and estimate its cost: $ cheap · $$ moderate · $$$ expensive · $$$$ prohibitively expensive to test.</p>
+            <div class="smart-table-mount" id="assumptionsTestMount"></div>
+            <button class="btn btn-ghost smart-add" id="assumptionsTestAdd" type="button" style="margin-top: 12px;">+ Add row</button>
+          </div>
+        </div>
+      </section>
+      <section class="panel" id="panel-team" hidden>
+        <div class="worksheet cols-2" id="teamGrid"></div>
+      </section>
+      <section class="panel" id="panel-smart" hidden>
+        <div class="smart-wrap">
+          <div class="smart-table-mount" id="smartTableMount"></div>
+          <button class="btn btn-ghost smart-add" id="smartAdd" type="button">+ Add row</button>
+          <aside class="smart-note">
+            <h3>Smart Actions include those that we covered in this Sprint:</h3>
+            <ul>
+              <li>Talking to customers</li>
+              <li>Documenting the Jobs to be done</li>
+              <li>Analyzing the competition</li>
+              <li>Documenting (and testing!) your assumptions</li>
+              <li>Planning your founding team</li>
+            </ul>
+            <p class="smart-foot">(Talking to customers is important!) 😂</p>
+          </aside>
+        </div>
+      </section>
     </main>
 
     <footer class="actionbar">
@@ -352,7 +656,7 @@
 
   // Single source of truth — drives both rendering and exports.
   // `num` follows the canonical Lean Canvas fill order (Maurya).
-  const SCHEMA = [
+  const SCHEMA_CANVAS = [
     { key: "problem", num: "01", title: "Problem", row: "top",
       help: "List your top 1-3 problems.",
       placeholder: "What are the top problems your customers face?",
@@ -391,11 +695,100 @@
       placeholder: "Your sources of revenue…" }
   ];
 
-  // Markdown reading order + the PRD mapping reference field titles by key.
+  // Jobs To Be Done worksheet — 2×2 grid of free-text prompts.
+  const SCHEMA_JTBD = [
+    { key: "jtbdFunctionalMain", num: "01", title: "Main Functional Job",
+      help: "The practical, objective job your target customer wants to achieve.",
+      placeholder: "What's the main practical job your customer wants done?" },
+    { key: "jtbdFunctionalRelated", num: "02", title: "Related Functional Job",
+      help: "The job your customer wants to accomplish alongside the main job to be done.",
+      placeholder: "What related job do they want done at the same time?" },
+    { key: "jtbdEmotional", num: "03", title: "Emotional Job",
+      help: "The subjective requirement — how the solution makes the customer feel.",
+      placeholder: "How does the customer want to feel?" },
+    { key: "jtbdSocial", num: "04", title: "Social Job",
+      help: "How the customer believes they're perceived by others while using the solution.",
+      placeholder: "How do they want to be perceived by others?" }
+  ];
+
+  // Competitor Analysis worksheet — single-column stack of free-text prompts.
+  const SCHEMA_COMPETITOR = [
+    { key: "competitorsDirect", num: "01", title: "Direct Competitors",
+      help: "Who solves the same problem for the same customer with a similar product? Their core value, capabilities, and why you'll win.",
+      placeholder: "Who are your direct competitors and why will you win?" },
+    { key: "competitorsCurrent", num: "02", title: "Current Alternatives",
+      help: "How do customers solve the problem today? What hacks have they pieced together? What part feels most urgent?",
+      placeholder: "How are customers coping today?" }
+  ];
+
+  // Assumptions worksheet — Brain Dump (01) and Critical (03) text cells. The
+  // Risk & Uncertainty 2×2 matrix (02) and Testing table (04) are custom-rendered.
+  const SCHEMA_ASSUMPTIONS = [
+    { key: "assumptionsBrainDump", num: "01", title: "Assumption Brain Dump",
+      help: "Set a 15-minute timer. List every “we believe…” statement you can. Quantity over quality — one per line; placement comes later.",
+      placeholder: "We believe that…" },
+    { key: "assumptionsCritical", num: "03", title: "Critical Assumptions",
+      help: "Capture the 3–5 most critical assumptions — the high-risk, high-uncertainty ones from the top-right of the matrix — to share with your team.",
+      placeholder: "Your 3–5 make-or-break assumptions…" }
+  ];
+
+  // Risk & Uncertainty matrix quadrants — each binds a textarea to a flat state key.
+  // Rendered top row first (High uncertainty), matching the on-screen 2×2 layout.
+  const ASSUMPTION_QUADRANTS = [
+    { key: "asmMxHiUncLoRisk", tag: "High Unc · Low Risk", crit: false,
+      placeholder: "Uncertain, lower stakes…" },
+    { key: "asmMxHiUncHiRisk", tag: "High Unc · High Risk — critical ($ cost)", crit: true,
+      placeholder: "Test these first — mark $–$$$$…" },
+    { key: "asmMxLoUncLoRisk", tag: "Low Unc · Low Risk", crit: false,
+      placeholder: "Fairly sure, lower stakes…" },
+    { key: "asmMxLoUncHiRisk", tag: "Low Unc · High Risk", crit: false,
+      placeholder: "Fairly sure, higher stakes…" }
+  ];
+
+  // Team Analysis worksheet — 2×2 grid mapping the "Team Analysis Worksheet" steps.
+  const SCHEMA_TEAM = [
+    { key: "teamStrengths", num: "01", title: "Your Strengths",
+      help: "Start with yourself. List your own strengths — functional skills and soft skills alike.",
+      placeholder: "What are you strong at?" },
+    { key: "teamWeaknesses", num: "02", title: "Your Weaknesses",
+      help: "Be honest about your own gaps and blind spots.",
+      placeholder: "Where are you weak or stretched thin?" },
+    { key: "teamSkillsNeeded", num: "03", title: "Skills the Startup Needs",
+      help: "Document the skills your startup needs to succeed. Include functional skills and soft skills like communication (written and oral) and people management.",
+      placeholder: "What capabilities must the team have?" },
+    { key: "teamGaps", num: "04", title: "Gaps to Fill",
+      help: "Identify the gaps to fill. Rank them by importance and note how you'll find the right person for each role. (Tip: use the gaps from your Lean Canvas.)",
+      placeholder: "Which roles, in what order, and how will you fill them?" }
+  ];
+
+  // Commitment to Smart Action — a custom interactive table (rendered below, not via
+  // the schema/makeCell machinery). Each row is { action, timeline, done }. Defaults
+  // mirror the worksheet: two blank rows followed by its two example rows.
+  const DEFAULT_SMART_ROWS = [
+    { action: "", timeline: "", done: false },
+    { action: "", timeline: "", done: false },
+    { action: "Select an accountability buddy (from this group perhaps 🤔)", timeline: "", done: false },
+    { action: "Meet with my accountability buddy", timeline: "Every 2-4 weeks", done: false }
+  ];
+
+  // Tabs, in display order. `id` keys the panel/slug; `schema` drives render + export.
+  // The "smart" tab uses `schema: []` because it renders a custom table, not cells.
+  const TABS = [
+    { id: "canvas",     label: "Lean Canvas",        schema: SCHEMA_CANVAS,     slug: "lean-canvas",        heading: "Lean Canvas" },
+    { id: "jtbd",       label: "Jobs To Be Done",    schema: SCHEMA_JTBD,       slug: "jobs-to-be-done",    heading: "Jobs To Be Done" },
+    { id: "competitor", label: "Competitor Analysis", schema: SCHEMA_COMPETITOR, slug: "competitor-analysis", heading: "Competitor Analysis" },
+    { id: "assumptions", label: "Assumptions",       schema: SCHEMA_ASSUMPTIONS, slug: "assumptions",        heading: "Assumptions" },
+    { id: "team",       label: "Team Analysis",      schema: SCHEMA_TEAM,       slug: "team-analysis",      heading: "Team Analysis" },
+    { id: "smart",      label: "Smart Actions",      schema: [],                slug: "smart-actions",      heading: "Commitment to Smart Action" }
+  ];
+
+  // Field titles by key (aria-labels, export blanks) — drawn from every worksheet.
   const TITLES = {};
-  SCHEMA.forEach(function (f) {
-    TITLES[f.key] = f.title;
-    if (f.sub) TITLES[f.sub.key] = f.sub.title;
+  TABS.forEach(function (tab) {
+    tab.schema.forEach(function (f) {
+      TITLES[f.key] = f.title;
+      if (f.sub) TITLES[f.sub.key] = f.sub.title;
+    });
   });
 
   const STORAGE_KEY = "leanCanvas:v1";
@@ -448,10 +841,10 @@
     return ta;
   }
 
-  function makeCell(field, index) {
+  function makeCell(field, index, useGridArea) {
     const cell = document.createElement("section");
     cell.className = "cell";
-    cell.style.gridArea = field.key;
+    if (useGridArea) cell.style.gridArea = field.key;
     cell.style.animationDelay = (index * 38) + "ms";
 
     const head = document.createElement("div");
@@ -495,9 +888,214 @@
 
   const topEl = document.getElementById("canvasTop");
   const bottomEl = document.getElementById("canvasBottom");
-  SCHEMA.forEach(function (f, i) {
-    (f.row === "bottom" ? bottomEl : topEl).appendChild(makeCell(f, i));
+  SCHEMA_CANVAS.forEach(function (f, i) {
+    (f.row === "bottom" ? bottomEl : topEl).appendChild(makeCell(f, i, true));
   });
+
+  const jtbdEl = document.getElementById("jtbdGrid");
+  SCHEMA_JTBD.forEach(function (f, i) {
+    jtbdEl.appendChild(makeCell(f, i, false));
+  });
+
+  const competitorEl = document.getElementById("competitorGrid");
+  SCHEMA_COMPETITOR.forEach(function (f, i) {
+    competitorEl.appendChild(makeCell(f, i, false));
+  });
+
+  // Assumptions: Brain Dump (01) and Critical (03) text cells in their own mounts;
+  // the matrix (02) and testing table (04) are custom-rendered below.
+  document.getElementById("asmBrainMount").appendChild(makeCell(SCHEMA_ASSUMPTIONS[0], 0, false));
+  document.getElementById("asmCriticalMount").appendChild(makeCell(SCHEMA_ASSUMPTIONS[1], 0, false));
+
+  const matrixGrid = document.getElementById("matrixGrid");
+  ASSUMPTION_QUADRANTS.forEach(function (q) {
+    const quad = document.createElement("div");
+    quad.className = "matrix-quad" + (q.crit ? " crit" : "");
+    const tag = document.createElement("span");
+    tag.className = "quad-tag";
+    tag.textContent = q.tag;
+    const ta = document.createElement("textarea");
+    ta.className = "cell-input matrix-input";
+    ta.dataset.key = q.key;
+    ta.placeholder = q.placeholder;
+    ta.setAttribute("aria-label", q.tag);
+    ta.spellcheck = true;
+    ta.value = state[q.key] || "";
+    ta.addEventListener("input", function () { state[q.key] = ta.value; scheduleSave(); });
+    quad.appendChild(tag);
+    quad.appendChild(ta);
+    matrixGrid.appendChild(quad);
+  });
+
+  const teamEl = document.getElementById("teamGrid");
+  SCHEMA_TEAM.forEach(function (f, i) {
+    teamEl.appendChild(makeCell(f, i, false));
+  });
+
+  /* ---------- Reusable interactive row table (Smart Actions, Assumption testing) ---------- */
+  // opts: { mountId, addId, columns, rows(): Array, makeRow(): Object }
+  // columns: [{ key, header, type:'textarea'|'input'|'checkbox', placeholder, width, align }]
+  function makeRowTable(opts) {
+    const mount = document.getElementById(opts.mountId);
+
+    function render() {
+      const table = document.createElement("table");
+      table.className = "smart-table";
+
+      const colgroup = document.createElement("colgroup");
+      opts.columns.forEach(function (c) {
+        const col = document.createElement("col");
+        if (c.width) col.style.width = c.width;
+        colgroup.appendChild(col);
+      });
+      const rmCol = document.createElement("col");
+      rmCol.style.width = "38px";
+      colgroup.appendChild(rmCol);
+      table.appendChild(colgroup);
+
+      const thead = document.createElement("thead");
+      const htr = document.createElement("tr");
+      opts.columns.forEach(function (c) {
+        const th = document.createElement("th");
+        if (c.align === "center") th.className = "th-done";
+        th.textContent = c.header;
+        htr.appendChild(th);
+      });
+      const thRm = document.createElement("th");
+      thRm.className = "th-remove";
+      htr.appendChild(thRm);
+      thead.appendChild(htr);
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      opts.rows().forEach(function (row, i) {
+        const tr = document.createElement("tr");
+
+        opts.columns.forEach(function (c) {
+          const td = document.createElement("td");
+          if (c.type === "checkbox") {
+            td.className = "smart-done-cell";
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.checked = !!row[c.key];
+            cb.setAttribute("aria-label", c.header);
+            cb.addEventListener("change", function () { row[c.key] = cb.checked; scheduleSave(); });
+            td.appendChild(cb);
+          } else {
+            const el = document.createElement(c.type === "input" ? "input" : "textarea");
+            el.className = "smart-input";
+            if (c.type === "input") el.type = "text";
+            el.placeholder = c.placeholder || "";
+            el.value = row[c.key] || "";
+            el.addEventListener("input", function () { row[c.key] = el.value; scheduleSave(); });
+            td.appendChild(el);
+          }
+          tr.appendChild(td);
+        });
+
+        const tdRm = document.createElement("td");
+        tdRm.className = "dt-remove-cell";
+        const rm = document.createElement("button");
+        rm.type = "button";
+        rm.className = "smart-remove";
+        rm.textContent = "×";
+        rm.title = "Remove row";
+        rm.setAttribute("aria-label", "Remove row");
+        rm.addEventListener("click", function () {
+          opts.rows().splice(i, 1);
+          if (!opts.rows().length) opts.rows().push(opts.makeRow());
+          render();
+          scheduleSave();
+        });
+        tdRm.appendChild(rm);
+        tr.appendChild(tdRm);
+
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+
+      mount.innerHTML = "";
+      mount.appendChild(table);
+    }
+
+    document.getElementById(opts.addId).addEventListener("click", function () {
+      opts.rows().push(opts.makeRow());
+      render();
+      scheduleSave();
+    });
+
+    return { render: render };
+  }
+
+  /* ---------- Smart Actions table ---------- */
+  function seedSmartRows() {
+    state.smartRows = DEFAULT_SMART_ROWS.map(function (r) {
+      return { action: r.action, timeline: r.timeline, done: r.done };
+    });
+  }
+  if (!Array.isArray(state.smartRows)) seedSmartRows();
+
+  const smartTable = makeRowTable({
+    mountId: "smartTableMount",
+    addId: "smartAdd",
+    columns: [
+      { key: "action", header: "Smart Action", type: "textarea", placeholder: "Your smart action…" },
+      { key: "timeline", header: "Commitment Timeline", type: "input", placeholder: "e.g. every 2-4 weeks", width: "28%" },
+      { key: "done", header: "Complete?", type: "checkbox", width: "92px", align: "center" }
+    ],
+    rows: function () { return state.smartRows; },
+    makeRow: function () { return { action: "", timeline: "", done: false }; }
+  });
+  smartTable.render();
+
+  /* ---------- Assumption testing table ---------- */
+  function seedAssumptionTests() {
+    state.assumptionsTests = [
+      { assumption: "", proposedTest: "", costOfTest: "" },
+      { assumption: "", proposedTest: "", costOfTest: "" }
+    ];
+  }
+  if (!Array.isArray(state.assumptionsTests)) seedAssumptionTests();
+
+  const testingTable = makeRowTable({
+    mountId: "assumptionsTestMount",
+    addId: "assumptionsTestAdd",
+    columns: [
+      { key: "assumption", header: "Assumption", type: "textarea", placeholder: "Which assumption?" },
+      { key: "proposedTest", header: "Proposed test", type: "textarea", placeholder: "How will you test it?" },
+      { key: "costOfTest", header: "Cost of test", type: "input", placeholder: "$ – $$$$", width: "150px" }
+    ],
+    rows: function () { return state.assumptionsTests; },
+    makeRow: function () { return { assumption: "", proposedTest: "", costOfTest: "" }; }
+  });
+  testingTable.render();
+
+  /* ---------- tabs ---------- */
+  const tabsEl = document.getElementById("tabs");
+  const tabBtns = {};
+  let activeTab = TABS.some(function (t) { return t.id === state._activeTab; })
+    ? state._activeTab : "canvas";
+
+  function showTab(id) {
+    activeTab = id;
+    state._activeTab = id;
+    TABS.forEach(function (t) {
+      document.getElementById("panel-" + t.id).hidden = (t.id !== id);
+      tabBtns[t.id].classList.toggle("active", t.id === id);
+    });
+    scheduleSave();
+  }
+
+  TABS.forEach(function (t) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tab";
+    btn.textContent = t.label;
+    btn.addEventListener("click", function () { showTab(t.id); });
+    tabBtns[t.id] = btn;
+    tabsEl.appendChild(btn);
+  });
+  showTab(activeTab);
 
   const projectInput = document.getElementById("project");
   projectInput.value = state._project || "";
@@ -535,8 +1133,97 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 0);
   }
 
-  /* ---------- Markdown export (canvas reading order) ---------- */
+  /* ---------- Markdown export (active tab only) ---------- */
   function buildMarkdown() {
+    if (activeTab === "canvas") return buildCanvasMarkdown();
+    if (activeTab === "smart") return buildSmartMarkdown();
+    if (activeTab === "assumptions") return buildAssumptionsMarkdown();
+    const tab = TABS.filter(function (t) { return t.id === activeTab; })[0];
+    return buildWorksheetMarkdown(tab.heading, tab.schema);
+  }
+
+  // Assumptions exports the Brain Dump, the 2×2 matrix (per quadrant), the critical
+  // list, and the testing table.
+  function buildAssumptionsMarkdown() {
+    const esc = function (s) { return (s || "").replace(/\|/g, "\\|").replace(/\n/g, " ").trim(); };
+    const lines = [];
+    lines.push("# " + projectName() + " — Assumptions");
+    lines.push("_Generated " + today() + "_");
+    lines.push("");
+    lines.push(section("Assumption Brain Dump", val("assumptionsBrainDump")));
+    lines.push("## Prioritization Matrix");
+    lines.push("_Level of Uncertainty × Risk to the venture_");
+    lines.push("");
+    ASSUMPTION_QUADRANTS.forEach(function (q) {
+      lines.push("### " + q.tag);
+      lines.push("");
+      lines.push((val(q.key) || "_TBD_") + "\n");
+    });
+    lines.push(section("Critical Assumptions", val("assumptionsCritical")));
+    lines.push("## Testing of Assumptions");
+    lines.push("");
+    lines.push("| Assumption | Proposed test | Cost of test |");
+    lines.push("| --- | --- | --- |");
+    const rows = (state.assumptionsTests || []).filter(function (r) {
+      return esc(r.assumption) || esc(r.proposedTest) || esc(r.costOfTest);
+    });
+    if (rows.length) {
+      rows.forEach(function (r) {
+        lines.push("| " + esc(r.assumption) + " | " + esc(r.proposedTest) + " | " + esc(r.costOfTest) + " |");
+      });
+    } else {
+      lines.push("| _TBD_ | | |");
+    }
+    return lines.join("\n");
+  }
+
+  // Smart Actions exports its commitment table as a Markdown table + the sprint note.
+  function buildSmartMarkdown() {
+    const esc = function (s) { return (s || "").replace(/\|/g, "\\|").replace(/\n/g, " ").trim(); };
+    const lines = [];
+    lines.push("# " + projectName() + " — Commitment to Smart Action");
+    lines.push("_Generated " + today() + "_");
+    lines.push("");
+    lines.push("## Commitments");
+    lines.push("");
+    lines.push("| Smart Action | Commitment Timeline | Complete? |");
+    lines.push("| --- | --- | --- |");
+    const rows = (state.smartRows || []).filter(function (r) {
+      return esc(r.action) || esc(r.timeline) || r.done;
+    });
+    if (rows.length) {
+      rows.forEach(function (r) {
+        lines.push("| " + esc(r.action) + " | " + esc(r.timeline) + " | " + (r.done ? "[x]" : "[ ]") + " |");
+      });
+    } else {
+      lines.push("| _TBD_ | | [ ] |");
+    }
+    lines.push("");
+    lines.push("## Smart Actions From This Sprint");
+    lines.push("");
+    ["Talking to customers", "Documenting the Jobs to be done", "Analyzing the competition",
+     "Documenting (and testing!) your assumptions", "Planning your founding team"].forEach(function (b) {
+      lines.push("- " + b);
+    });
+    lines.push("");
+    lines.push("_(Talking to customers is important!) 😂_");
+    return lines.join("\n");
+  }
+
+  // Generic builder for the simple worksheets — one section per field, in schema order.
+  function buildWorksheetMarkdown(heading, schema) {
+    const lines = [];
+    lines.push("# " + projectName() + " — " + heading);
+    lines.push("_Generated " + today() + "_");
+    lines.push("");
+    schema.forEach(function (f) {
+      lines.push(section(f.title, val(f.key)));
+    });
+    return lines.join("\n");
+  }
+
+  // Canvas keeps its bespoke reading order (problem → alternatives → segments → …).
+  function buildCanvasMarkdown() {
     const lines = [];
     lines.push("# " + projectName() + " — Lean Canvas");
     lines.push("_Generated " + today() + "_");
@@ -620,7 +1307,8 @@
 
   /* ---------- actions ---------- */
   document.getElementById("btnMd").addEventListener("click", function () {
-    download(slug(projectName()) + "-lean-canvas.md", buildMarkdown());
+    const tab = TABS.filter(function (t) { return t.id === activeTab; })[0];
+    download(slug(projectName()) + "-" + tab.slug + ".md", buildMarkdown());
   });
   // v2: PRD export — re-enable alongside the #btnPrd button in the markup.
   // document.getElementById("btnPrd").addEventListener("click", function () {
@@ -662,6 +1350,10 @@
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     document.querySelectorAll(".cell-input").forEach(function (ta) { ta.value = ""; });
     projectInput.value = "";
+    seedSmartRows();
+    smartTable.render();
+    seedAssumptionTests();
+    testingTable.render();
     flashSaved();
   });
 })();
